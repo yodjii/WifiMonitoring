@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Config (Personal)
+aliases.json
+excluded_macs.json
+
+# Keep examples
+!aliases.json.example
+!excluded_macs.json.example
+
+# OS
+.DS_Store
+Thumbs.db
