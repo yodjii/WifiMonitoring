@@ -2,7 +2,7 @@ import time
 from config import config
 from scanner import scan_network
 import os
-from telegram_notifier import notify_device_join, notify_device_leave, notify_initial_scan
+from telegram_notifier import notify_device_join, notify_device_leave, notify_initial_scan, get_display_name
 
 def clear_screen():
     # For Windows
@@ -50,14 +50,15 @@ def main():
                         notify_device_leave(info['hostname'], info['ip'], mac)
             
             print(f"\n--- Scan result at {time.strftime('%Y-%m-%d %H:%M:%S')} ---", flush=True)
-            print(f"{'IP Address':<15} {'MAC Address':<20} {'Hostname':<30}", flush=True)
+            print(f"{'IP Address':<15} {'MAC Address':<20} {'Hostname/Alias':<30}", flush=True)
             print("-" * 65, flush=True)
             
             if not devices:
                 print("No devices found.", flush=True)
             else:
                 for device in devices:
-                    print(f"{device['ip']:<15} {device['mac']:<20} {device['hostname']:<30}", flush=True)
+                    display_name = get_display_name(device['hostname'], device['mac'])
+                    print(f"{device['ip']:<15} {device['mac']:<20} {display_name:<30}", flush=True)
             
             # Update state for next scan
             known_devices = current_devices

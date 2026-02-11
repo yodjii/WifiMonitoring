@@ -17,7 +17,12 @@ class Config:
     if os.path.exists("aliases.json"):
         try:
             with open("aliases.json", "r", encoding="utf-8") as f:
-                ALIASES = json.load(f)
+                raw_aliases = json.load(f)
+                # Normalize keys: lowercase and strip potential typos like trailing colons
+                ALIASES = {}
+                for k, v in raw_aliases.items():
+                    clean_key = k.strip().lower().rstrip(':')
+                    ALIASES[clean_key] = v
         except Exception as e:
             print(f"Error loading aliases.json: {e}")
 

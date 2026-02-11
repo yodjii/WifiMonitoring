@@ -33,8 +33,13 @@ def send_telegram_message(message: str) -> bool:
         print(f"[TELEGRAM ERROR] Exception during sending: {e}")
         return False
 
-def get_display_name(hostname):
-    """Returns the alias if it exists, otherwise the original hostname."""
+def get_display_name(hostname, mac=None):
+    """
+    Returns the alias if it exists, otherwise the original hostname.
+    Priority: MAC alias > Hostname alias > Hostname
+    """
+    if mac and mac in config.ALIASES:
+        return config.ALIASES[mac]
     return config.ALIASES.get(hostname, hostname)
 
 def notify_device_join(hostname, ip, mac):
@@ -42,7 +47,7 @@ def notify_device_join(hostname, ip, mac):
         alias = config.EXCLUDED_MACS[mac]
         print(f"[SCAN] Notification ignored for {hostname} ({mac} - {alias}) - MAC excluded.")
         return False
-    display_name = get_display_name(hostname)
+    display_name = get_display_name(hostname, mac)
     message = f"🆕 {display_name}"
     return send_telegram_message(message)
 
@@ -51,7 +56,7 @@ def notify_device_leave(hostname, ip, mac):
         alias = config.EXCLUDED_MACS[mac]
         print(f"[SCAN] Notification ignored for {hostname} ({mac} - {alias}) - MAC excluded.")
         return False
-    display_name = get_display_name(hostname)
+    display_name = get_display_name(hostname, mac)
     message = f"❌ {display_name}"
     return send_telegram_message(message)
 
@@ -65,7 +70,7 @@ def notify_initial_scan(devices):
     
     device_list = []
     for d in filtered_devices:
-        display_name = get_display_name(d['hostname'])
+        display_name = get_display_name(d['hostname'], d['mac'])
         device_list.append(f"• {display_name}")
     
     summary = "\n".join(device_list)

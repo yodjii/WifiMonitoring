@@ -1,4 +1,5 @@
 {
     "hostname.local": "Device Name",
-    "another-device.home": "My Laptop"
+    "another-device.home": "My Laptop",
+    "00:00:00:00:00:00": "Device Alias (by MAC)"
 }
